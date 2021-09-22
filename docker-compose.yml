@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web
+    container_name: web-server
+    command: npm run dev
+    volumes:
+      - ./web:/web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - ./nft_volume:/data/db
+    ports:
+      - "27017:27017"
+
+
+  scraping:
+    build: ./scrapers
+    container_name: scrapers
+    command: python main.py
+    restart: on-failure
+    depends_on:
+      - mongodb
+      - api
+
+  api:
+    build: ./api
+    container_name: api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  nft_volume:

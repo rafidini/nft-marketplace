@@ -1,0 +1,5 @@
+fastapi==0.68.1
+uvicorn[standard]
+pymongo==3.12.0
+pydantic==1.8.2
+pydantic[email]==1.8.2

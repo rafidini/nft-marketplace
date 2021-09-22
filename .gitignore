@@ -1,0 +1,5 @@
+# Docker volume not included
+nft_volume
+
+# Temporary data for database
+scrapers/data.json
