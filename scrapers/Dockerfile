@@ -1,14 +1,10 @@
-# Import python 3.8 from DockerHub
-FROM python:3.8-buster
+FROM python:3.8
 
-# Define the application directory
-WORKDIR /
+RUN mkdir /home/dev/ && mkdir /home/dev/code/
 
-# Copy the file to the Docker image
-COPY requirements.txt .
+WORKDIR /home/dev/code/
 
-# Run the command to install python packages
-RUN pip install -r requirements.txt
+COPY  . .
+RUN  pip install --upgrade pip &&  pip install pipenv && pipenv install --skip-lock
 
-# Copy the application repository in the Docker image
-COPY / .
+CMD ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]

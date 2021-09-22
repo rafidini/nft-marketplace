@@ -20,16 +20,6 @@ services:
     ports:
       - "27017:27017"
 
-
-  scraping:
-    build: ./scrapers
-    container_name: scrapers
-    command: python main.py
-    restart: on-failure
-    depends_on:
-      - mongodb
-      - api
-
   api:
     build: ./api
     container_name: api
@@ -37,6 +27,25 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
+  
+  selenium:
+    image: selenium/standalone-firefox
+    container_name: selenium
+    ports:
+      - 4444:4444
+
+  scrapers:
+    build: ./scrapers
+    container_name: scrapers
+    ports:
+     - "8888:8888"
+    command: ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+    depends_on: 
+      - selenium
+      - api
+      - mongodb
+    volumes:
+      - ./scrapers:/home/dev/code/
 
 networks:
   default:
