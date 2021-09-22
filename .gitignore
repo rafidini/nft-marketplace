@@ -5,3 +5,7 @@ nft_volume
 scrapers/*.json
 scrapers/*.txt
 scrapers/.*
+
+# Web generated files from Docker
+web/.next
+web/node_modules
