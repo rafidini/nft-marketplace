@@ -43,7 +43,6 @@ services:
     depends_on: 
       - selenium
       - api
-      - mongodb
     volumes:
       - ./scrapers:/home/dev/code/
 
