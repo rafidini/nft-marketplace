@@ -10,7 +10,7 @@ from datetime import datetime
 
 # Internal packages
 from models.nft import NFTModel
-from crud.crud import get_client, get_nfts, get_nft
+from crud.crud import get_nfts, get_nft, insert_nft
 
 app = FastAPI()
 
@@ -34,15 +34,19 @@ def get_one_nft(id: str):
 
 @app.post("/add_nft", response_description="Add new NFT", response_model=NFTModel)
 def create_nft(nft: NFTModel = Body(...)):
-    # url = 'http://localhost:8000/nft'
-    # headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    # requests.post(url, data=json.dumps(data), headers=headers)
+    # Response content
+    content_response = {"date": str(datetime.now())}
 
-    # Logic
-    client = get_client()
-    db = client['local']
+    # Encode the NFT
     nft = jsonable_encoder(nft)
-    new_nft = db["nfts"].insert_one(nft)
-    created_student = db["nfts"].find_one({"_id": new_nft.inserted_id})
-    content_response = {"date": str(datetime.now()), "created":created_student}
+
+    # Insert the NFT
+    if not insert_nft('local', nft):
+        # Response content
+        content_response["status"] = "Failure"
+
+        return JSONResponse(status_code=409, content=content_response)
+    
+    # Response content
+    content_response["status"] = "Success"
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)
