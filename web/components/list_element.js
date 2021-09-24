@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function ListElement({ children, title, creator, description, status, price, link, image, currency, id }) {
     // Change color depending on status
     var color_status = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full "
@@ -37,10 +39,12 @@ export default function ListElement({ children, title, creator, description, sta
             <div class="mt-4 flex justify-between">
                 <div>
                     <h3 class="text-sm text-gray-700">
-                        <a href={link_page}>
-                            <span aria-hidden="true" class="absolute inset-0"></span>
-                            {title}
-                        </a>
+                        <Link href={link_page}>
+                            <a>
+                                <span aria-hidden="true" class="absolute inset-0"></span>
+                                {title}
+                            </a>
+                        </Link>
                     </h3>
                     <p class={color_status}>
                         {symbol_status} {status}
