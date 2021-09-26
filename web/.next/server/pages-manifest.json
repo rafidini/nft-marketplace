@@ -2,5 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/marketplace": "pages/marketplace.js"
+  "/marketplace": "pages/marketplace.js",
+  "/": "pages/index.js",
+  "/about": "pages/about.js",
+  "/nft/[id]": "pages/nft/[id].js",
+  "/sign-up": "pages/sign-up.js",
+  "/sign-in": "pages/sign-in.js"
 }
