@@ -15,7 +15,7 @@ def select_number():
             break
     return int(nb)
 
-def try_find_elements_by_xpath(browser, xpath, wait=5, only_one=True, get='text', warn_error=False):
+def try_find_elements_by_xpath(browser, xpath, wait=10, only_one=True, get='text', warn_error=False):
   try:
     WebDriverWait(browser,wait).until(EC.presence_of_element_located((By.XPATH,xpath)))
     if only_one:
@@ -46,8 +46,8 @@ def process_data(nft):
     for key in nft.keys():
         if key=='date': nft['date'] = str(datetime.now())
         elif nft[key]==None: nft[key]='N/A'
-        elif key=='currency':
-            amount, currency = nft['currency'].split(' ')
+        elif key=='amount':
+            amount, currency = nft['amount'].split(' ')
             nft['amount'] = float(amount)
             nft['currency'] = currency
     return nft
@@ -69,7 +69,7 @@ def parse_nft(browser):
     "creator" : try_find_elements_by_xpath(browser, "//div[contains(div/text(),'Creator')]/div", only_one=False)[-1],
     "date": try_find_elements_by_xpath(browser, "//div[@class='TimeLine__TimeLineItem-wkqr3a-0 oHPcd css-vurnku']",
                                        only_one=False),
-    "description" : try_find_elements_by_xpath(browser, "//div[@class='css-1e3aajp']"),
+    "description" : try_find_elements_by_xpath(browser, '//div[@class="css-df6xow"]'),
     "contract_address": try_find_elements_by_xpath(browser, "//div[@class='css-2czx7p']/*/a"),
     "link": browser.current_url
   }
