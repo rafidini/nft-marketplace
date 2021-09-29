@@ -1,21 +1,19 @@
+import os
 import sys
 import json
 import requests
-from datetime import datetime
+import numpy as np
+from tqdm import tqdm
+from time import sleep
+from selenium import webdriver
+from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def select_number():
-    nb=-1
-    while 1==1:
-        nb = input("Select a NFT number: ")
-        if  nb.isnumeric() and int(nb)>=0:
-            break
-    return int(nb)
-
-def try_find_elements_by_xpath(browser, xpath, wait=5, only_one=True, get='text', warn_error=False):
+def try_find_elements_by_xpath(browser, xpath, wait=10, only_one=True, get='text', warn_error=False):
   try:
     WebDriverWait(browser,wait).until(EC.presence_of_element_located((By.XPATH,xpath)))
     if only_one:
@@ -46,8 +44,9 @@ def process_data(nft):
     for key in nft.keys():
         if key=='date': nft['date'] = str(datetime.now())
         elif nft[key]==None: nft[key]='N/A'
-        elif key=='currency':
-            amount, currency = nft['currency'].split(' ')
+        elif key=='creator': nft['creator']=nft['creator'][-1]
+        elif key=='amount':
+            amount, currency = nft['amount'].split(' ')
             nft['amount'] = float(amount)
             nft['currency'] = currency
     return nft
@@ -66,12 +65,77 @@ def parse_nft(browser):
     "image": try_find_elements_by_xpath(browser, '//div[@type="img"]/*/img | //div[@type="img"]/*/video', get='src'),
     "amount": try_find_elements_by_xpath(browser, '//div[@class="css-1nwnm8x"]/*'),
     "currency": None,
-    "creator" : try_find_elements_by_xpath(browser, "//div[contains(div/text(),'Creator')]/div", only_one=False)[-1],
+    "creator" : try_find_elements_by_xpath(browser, "//div[contains(div/text(),'Creator')]/div", only_one=False),
     "date": try_find_elements_by_xpath(browser, "//div[@class='TimeLine__TimeLineItem-wkqr3a-0 oHPcd css-vurnku']",
                                        only_one=False),
-    "description" : try_find_elements_by_xpath(browser, "//div[@class='css-1e3aajp']"),
+    "description" : try_find_elements_by_xpath(browser, '//div[@class="css-df6xow"]'),
     "contract_address": try_find_elements_by_xpath(browser, "//div[@class='css-2czx7p']/*/a"),
     "link": browser.current_url
   }
   nft = process_data(nft)
   return add_to_db(nft)
+
+
+def open_marketplace():
+        start_url = 'https://www.binance.com/en/nft/market?currency=&mediaType=&tradeType=&amountFrom=&amountTo=&categorys=&keyword=&page=1&rows=16&productIds=&order=list_time%40-1'
+        print(f"{str(datetime.now()).split('.')[0]}: New scraping initiated")
+        browser = webdriver.Remote("http://selenium:4444/wd/hub", DesiredCapabilities.FIREFOX)
+        browser.get(start_url)
+        cookies = browser.find_element_by_xpath("//button[contains(text(),'Accept')]")
+        cookies.click()
+        print(f"{str(datetime.now()).split('.')[0]}: Binance marketplace opened")
+        return browser
+        
+
+def scroll_down(browser, MAX_NFT_NB):
+    CURRENT_PAGE_NUMBER = int(browser.current_url.split("page=")[-1].split("&")[0])
+    NFT_NUMBER_PER_PAGE = int(browser.current_url.split("rows=")[-1].split("&")[0])
+    if MAX_NFT_NB/NFT_NUMBER_PER_PAGE == MAX_NFT_NB//NFT_NUMBER_PER_PAGE:
+      scroll_down = np.arange((MAX_NFT_NB//NFT_NUMBER_PER_PAGE)-1)
+    else:
+      scroll_down = np.arange(MAX_NFT_NB//NFT_NUMBER_PER_PAGE)
+    for i in tqdm(scroll_down, desc=f'{str(datetime.now()).split(".")[0]}: Scrolling down on the main page'):
+      while CURRENT_PAGE_NUMBER == (browser.current_url.split("page=")[-1]).split("&")[0]:
+        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+      CURRENT_PAGE_NUMBER = (browser.current_url.split("page=")[-1]).split("&")[0]
+    
+    
+def find_detailed_pages(browser, MAX_NFT_NB):
+    detailed_pages = []
+    pbar = tqdm(total = MAX_NFT_NB, desc=f"{str(datetime.now()).split('.')[0]}: Searching of NFT detailed pages")
+    BAR_LEVEL = 0
+    while len(detailed_pages) < MAX_NFT_NB:
+      browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+      detailed_pages = browser.find_elements_by_xpath('//button[contains(text(),"BSC")]')
+      pbar.update(max(0,len(detailed_pages)-BAR_LEVEL))
+      BAR_LEVEL = len(detailed_pages)
+    pbar.close()
+    return detailed_pages
+
+
+def parse_detailed_pages(browser, detailed_pages):
+    success = 0
+    failure = 0
+    total = len(detailed_pages)
+
+    for page in tqdm(detailed_pages, desc=f"{str(datetime.now()).split('.')[0]}: Scraping of detailed NFT pages"):
+      page.click()
+      browser.switch_to.window(browser.window_handles[-1])
+      res = parse_nft(browser)
+      if res.status_code == 201:
+            success += 1
+      else:
+            failure += 1
+      browser.close()
+      browser.switch_to.window(browser.window_handles[-1])
+        
+    browser.quit()
+    print(f"{str(datetime.now()).split('.')[0]} Storage on database: Success={success}/{total}; Failure={failure}/{total}")
+    
+    
+def wait_next_scraping(NEXT_START, WAIT):
+    to_wait = NEXT_START - datetime.now()
+    to_wait = max(0,to_wait.total_seconds())
+    print(f"{str(datetime.now()).split('.')[0]} Wait for {int(to_wait)} seconds")
+    sleep(to_wait)
+    return NEXT_START+timedelta(seconds=WAIT)
