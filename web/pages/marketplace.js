@@ -5,7 +5,7 @@ import List from '../components/list'
 // This gets called on every request
 export async function getServerSideProps() {
     // Fetch data from external API
-    const res = await fetch(`http://api:8000/nfts?limit=20`)
+    const res = await fetch(`http://api:8000/nfts?limit=35`)
     const data = await res.json()
   
     // Pass data to the page via props

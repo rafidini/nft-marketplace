@@ -1,3 +1,4 @@
+import pymongo
 from pymongo import MongoClient
 
 def get_client():
@@ -16,7 +17,7 @@ def get_nfts(database: str, limit):
     collection = database['nfts']
 
     # Get NFTs
-    nfts = [ _ for _ in collection.find({}).limit(limit)]
+    nfts = [ _ for _ in collection.find({}).sort("date", pymongo.DESCENDING).limit(limit)]
 
     return nfts
 

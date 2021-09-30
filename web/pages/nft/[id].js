@@ -24,7 +24,7 @@ export default function NftPage({nft}) {
     return (
         <div class="relative bg-white">
             <Head>
-                <title>NFTs ・ {nft['name']}</title>
+                <title>{nft['name']}</title>
                 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2592/2592201.png" />
             </Head>
             <main>
@@ -41,7 +41,7 @@ export default function NftPage({nft}) {
                                 <dl class="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
                                     <div class="border-t border-gray-200 pt-4">
                                         <dt class="font-medium text-gray-900">Creator</dt>
-                                        <dd class="mt-2 text-sm text-gray-500">{nft['creator']}</dd>
+                                        <dd class="mt-2 text-sm text-gray-500">@{nft['creator']}</dd>
                                     </div>
 
                                     <div class="border-t border-gray-200 pt-4">
