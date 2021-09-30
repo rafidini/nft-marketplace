@@ -40,6 +40,7 @@ services:
     ports:
      - "8888:8888"
     command: ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+    #command: ["pipenv", "run", "python", "nft.py"]
     depends_on: 
       - selenium
       - api

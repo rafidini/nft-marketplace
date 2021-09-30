@@ -3,6 +3,7 @@ import sys
 import json
 import requests
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 from time import sleep
 from selenium import webdriver
@@ -52,10 +53,8 @@ def process_data(nft):
     return nft
 
 
-def add_to_db(nft):
-    url = 'http://api:8000/add_nft'
-    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    return requests.post(url, data=json.dumps(nft), headers=headers)
+def add_to_db(_dict, url, headers):
+    return requests.post(url, data=json.dumps(_dict), headers=headers)
 
 
 def parse_nft(browser):
@@ -73,17 +72,19 @@ def parse_nft(browser):
     "link": browser.current_url
   }
   nft = process_data(nft)
-  return add_to_db(nft)
+  url = 'http://api:8000/add_nft'
+  headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+  return add_to_db(nft, url, headers)
 
 
-def open_marketplace():
-        start_url = 'https://www.binance.com/en/nft/market?currency=&mediaType=&tradeType=&amountFrom=&amountTo=&categorys=&keyword=&page=1&rows=16&productIds=&order=list_time%40-1'
+def open_binance(start_url, handle_cookies=True):
         print(f"{str(datetime.now()).split('.')[0]}: New scraping initiated")
         browser = webdriver.Remote("http://selenium:4444/wd/hub", DesiredCapabilities.FIREFOX)
         browser.get(start_url)
-        cookies = browser.find_element_by_xpath("//button[contains(text(),'Accept')]")
-        cookies.click()
-        print(f"{str(datetime.now()).split('.')[0]}: Binance marketplace opened")
+        if handle_cookies:
+            cookies = browser.find_element_by_xpath("//button[contains(text(),'Accept')]")
+            cookies.click()
+        print(f"{str(datetime.now()).split('.')[0]}: Binance page correctly opened")
         return browser
         
 
@@ -113,7 +114,7 @@ def find_detailed_pages(browser, MAX_NFT_NB):
     return detailed_pages
 
 
-def parse_detailed_pages(browser, detailed_pages):
+def parse_detailed_nft_pages(browser, detailed_pages):
     success = 0
     failure = 0
     total = len(detailed_pages)
@@ -139,3 +140,29 @@ def wait_next_scraping(NEXT_START, WAIT):
     print(f"{str(datetime.now()).split('.')[0]} Wait for {int(to_wait)} seconds")
     sleep(to_wait)
     return NEXT_START+timedelta(seconds=WAIT)
+
+
+def find_crypto_pages(browser):
+    print(f"{str(datetime.now()).split('.')[0]}: Searching of crypto pages")
+    browser.find_element_by_xpath('//div[contains(text(),"Toutes les cryptos")]').click()
+    nb_pages = browser.find_elements_by_xpath('//button[contains(@aria-label,"Page number")]')[-1].text
+    return int(nb_pages)
+
+def parse_crypto_pages(browser, nb_pages):
+    columns = ["Acronym","Name","Price"]
+    crypto = pd.DataFrame(columns=columns)
+    for i in tqdm(range(1,int(nb_pages)+1), desc=f'{str(datetime.now()).split(".")[0]} Scraping of crypto pages'):
+        if i>1:
+            next_page = browser.find_element_by_xpath(f"//button[text()='{i}']")
+            next_page.click()
+        new_infos = pd.DataFrame([elt.text.split("\n")[0:len(columns)] 
+                                  for elt in browser.find_elements_by_xpath('//div[@class="css-vlibs4"]')],
+                                 columns=columns)
+        crypto = pd.concat([crypto,new_infos], ignore_index=True)
+    crypto['Currency'] = crypto.Price.apply(lambda s: s[0])
+    crypto['Date'] = len(crypto)*[str(datetime.now())]
+    crypto.Price = crypto.Price.apply(lambda s: s[1:].replace('\u202f','').replace(',','.')).astype('float')
+    crypto = crypto.to_dict(orient='records')
+    print(crypto)
+    browser.quit()
+    return crypto

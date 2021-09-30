@@ -1,7 +1,7 @@
 
 from utils import *
 
-WAIT = 18000 # 5h = 18000s
+WAIT = 3*60 # 5h = 18000s
 MAX_NFT_NB = 16
 NEXT_START = datetime.now()+timedelta(seconds=WAIT)
 
