@@ -21,6 +21,13 @@ export default function NftPage({nft}) {
         "ETH": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=013"
     }
 
+    // Image or Video
+    var picture = ""
+    if (nft['image'].search("mp4") < 0)
+        picture = <img src={nft['image']}  alt="" class="bg-gray-100 rounded-lg" />
+    else
+        picture = <video src={nft['image']}  alt="" class="bg-gray-100 rounded-lg" autoplay/>
+
     return (
         <div class="relative bg-white">
             <Head>
@@ -32,7 +39,7 @@ export default function NftPage({nft}) {
                     <div class="bg-white">
                         <div class="max-w-2xl mx-auto py-24 px-4 grid items-center grid-cols-1 gap-y-16 gap-x-8 sm:px-6 sm:py-32 lg:max-w-7xl lg:px-8 lg:grid-cols-2">
                             <div class="grid grid-cols-1 grid-rows-1 gap-0 sm:gap-0 lg:gap-0">
-                                <img src={nft['image']} alt="" class="bg-gray-100 rounded-lg" />
+                                {picture}
                             </div>
                             <div>
                                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">{nft['name']}</h2>
