@@ -149,7 +149,7 @@ def find_crypto_pages(browser):
     return int(nb_pages)
 
 def parse_crypto_pages(browser, nb_pages):
-    columns = ["Acronym","Name","Price"]
+    columns = ["acronym","name","price"]
     crypto = pd.DataFrame(columns=columns)
     for i in tqdm(range(1,int(nb_pages)+1), desc=f'{str(datetime.now()).split(".")[0]} Scraping of crypto pages'):
         if i>1:
@@ -159,10 +159,21 @@ def parse_crypto_pages(browser, nb_pages):
                                   for elt in browser.find_elements_by_xpath('//div[@class="css-vlibs4"]')],
                                  columns=columns)
         crypto = pd.concat([crypto,new_infos], ignore_index=True)
-    crypto['Currency'] = crypto.Price.apply(lambda s: s[0])
-    crypto['Date'] = len(crypto)*[str(datetime.now())]
-    crypto.Price = crypto.Price.apply(lambda s: s[1:].replace('\u202f','').replace(',','.')).astype('float')
+    crypto['currency'] = crypto.price.apply(lambda s: s[0])
+    crypto['date'] = len(crypto)*[str(datetime.now())]
+    crypto.price = crypto.price.apply(lambda s: s[1:].replace('\u202f','').replace(',','.')).astype('float')
     crypto = crypto.to_dict(orient='records')
-    print(crypto)
+    url = 'http://api:8000/add_crypto'
+    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    success = 0
+    failure = 0
+    total = len(crypto)
+    for _dict in crypto:
+        res = add_to_db(_dict, url, headers)
+        if res.status_code == 201:
+            success += 1
+        else:
+            failure += 1
+    print(f"{str(datetime.now()).split('.')[0]} Storage on database: Success={success}/{total}; Failure={failure}/{total}")
     browser.quit()
     return crypto
