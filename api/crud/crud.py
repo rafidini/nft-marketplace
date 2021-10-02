@@ -53,3 +53,48 @@ def insert_nft(database: str, nft):
     collection.insert_one(nft)
     
     return True
+
+def get_cryptos(database: str, limit):
+    # Connect
+    client = get_client()
+
+    # Link with the database
+    database = client[database]
+
+    # Link with the collection
+    collection = database['cryptos']
+
+    # Get NFTs
+    cryptos = [ _ for _ in collection.find({}).limit(limit)]
+
+    return cryptos
+
+def get_crypto(database: str, id: str):
+    # Connect
+    client = get_client()
+
+    # Link with the database
+    database = client[database]
+
+    # Link with the collection
+    collection = database['cryptos']
+
+    # Get NFTs
+    crypto = collection.find_one({'_id':id})
+
+    return crypto
+
+def insert_crypto(database: str, crypto):
+    # Connect
+    client = get_client()
+
+    # Link with the database
+    database = client[database]
+
+    # Link with the collection
+    collection = database['cryptos']
+    
+    # Add the NFT in database
+    collection.insert_one(crypto)
+    
+    return True

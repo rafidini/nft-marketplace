@@ -29,7 +29,7 @@ services:
       - mongodb
   
   selenium:
-    image: selenium/standalone-firefox
+    image: selenium/standalone-chrome
     container_name: selenium
     ports:
       - 4444:4444
