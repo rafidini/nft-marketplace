@@ -69,7 +69,7 @@ def get_cryptos(database: str, limit):
 
     return cryptos
 
-def get_crypto(database: str, id: str):
+def get_crypto(database: str, ticker: str):
     # Connect
     client = get_client()
 
@@ -80,7 +80,7 @@ def get_crypto(database: str, id: str):
     collection = database['cryptos']
 
     # Get NFTs
-    crypto = collection.find_one({'_id':id})
+    crypto = collection.find_one({'acronym':ticker})
 
     return crypto
 

@@ -58,9 +58,9 @@ def get_all_cryptos(limit: Optional[int] = 10):
     return JSONResponse(status_code=200, content=nfts)
 
 @app.get("/crypto")
-def get_one_crypto(id: str):
-    nft = get_crypto('local', id)
-    return JSONResponse(status_code=200, content=nft)
+def get_one_crypto(ticker: str):
+    nft = get_crypto('local', ticker)
+    return JSONResponse(status_code=200 if nft is not None else 404, content=nft)
 
 @app.post("/add_crypto", response_description="Add new crypto", response_model=CryptoModel)
 def create_crypto(crypto: CryptoModel = Body(...)):
