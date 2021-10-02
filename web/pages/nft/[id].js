@@ -3,16 +3,24 @@ import Layout from '../../components/layout'
 
 // This also gets called at build time
 export async function getServerSideProps(context) {
-    const nft_id = context['params']['id']
-    const url = "http://api:8000/nft?id=" + String(nft_id)
-    const res = await fetch(url)
-    const nft = await res.json()
-  
+    var query = context.query
+    const [nft_res, crypto_res] = await Promise.all([
+        fetch(`http://api:8000/nft?id=` + context['params']['id']), 
+        fetch(`http://api:8000/crypto?ticker=` + query['currency'])
+    ]);
+
+    const [nft, crypto] = await Promise.all([
+        nft_res.json(), 
+        crypto_res.json()
+    ]);
+
     // Pass post data to the page via props
-    return { props: { nft } }
+    return { props: { nft, crypto } }
 }
 
-export default function NftPage({nft}) {
+export default function NftPage({ nft, crypto }) {
+    var price = parseFloat(crypto['price']) * parseFloat(nft['amount'])
+    price = price.toFixed(2)
 
     // Cryptocurrency logo mapping
     const logos_currency = {
@@ -24,9 +32,9 @@ export default function NftPage({nft}) {
     // Image or Video
     var picture = ""
     if (nft['image'].search("mp4") < 0)
-        picture = <img src={nft['image']}  alt="" class="bg-gray-100 rounded-lg" />
+        picture = <img src={nft['image']} alt="" class="bg-gray-100 rounded-lg" />
     else
-        picture = <video src={nft['image']}  alt="" class="bg-gray-100 rounded-lg" autoplay/>
+        picture = <video src={nft['image']} alt="" class="bg-gray-100 rounded-lg" autoplay />
 
     return (
         <div class="relative bg-white">
@@ -75,8 +83,10 @@ export default function NftPage({nft}) {
                                     </div>
 
                                     <div class="border-t border-gray-200 pt-4">
-                                        <dt class="font-medium text-gray-900">Price ($)</dt>
-                                        <dd class="mt-2 text-sm text-gray-500 inline">??</dd>
+                                        <dt class="font-medium text-gray-900">Price ({crypto['currency']})</dt>
+                                        <dd class="mt-2 text-sm text-gray-500 inline">
+                                            {price}
+                                        </dd>
                                     </div>
                                 </dl>
                             </div>

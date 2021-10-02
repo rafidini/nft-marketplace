@@ -29,7 +29,7 @@ export default function ListElement({ children, title, creator, description, sta
         picture = <video src={image} alt="" class="w-full h-full object-center object-cover lg:w-full lg:h-full" autoplay/>
     
     // Link
-    var link_page = "/nft/" + id
+    var link_page = "/nft/" + id + "?currency="+currency
 
     return (
         <div class="group relative z-0">
