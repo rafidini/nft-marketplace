@@ -45,8 +45,14 @@ res = requests.post(
         "lastName":"Bwah",
         "enabled":"true",
         "emailVerified": "false",
+        "credentials": [{"type":"password", "value":"pwd", "temporary":"false"}]
     }
 )
 
 print()
+try:
+    print(f"POST Request keys : {res.json().keys()}")
+except:
+    pass
+
 print(f"POST Request [{res.status_code} - {res.reason}] : {res.json()}")

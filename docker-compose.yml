@@ -57,7 +57,7 @@ services:
     
   # PostgreSQL as database for Keycload
   postgres:
-    image: postgres
+    image: postgres:12
     ports:
       - "5432:5432"
     environment:
@@ -69,7 +69,7 @@ services:
 
   # Keycloak ft. PostgreSQL for authentification
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:10.0.0
     depends_on:
       - postgres
     ports:
