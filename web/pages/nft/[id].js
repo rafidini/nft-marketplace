@@ -1,26 +1,18 @@
 import Head from 'next/head'
 import Layout from '../../components/layout'
+import CryptoPrice from '../../components/crypto_price';
 
 // This also gets called at build time
 export async function getServerSideProps(context) {
-    var query = context.query
-    const [nft_res, crypto_res] = await Promise.all([
-        fetch(`http://api:8000/nft?id=` + context['params']['id']), 
-        fetch(`http://api:8000/crypto?ticker=` + query['currency'])
-    ]);
-
-    const [nft, crypto] = await Promise.all([
-        nft_res.json(), 
-        crypto_res.json()
-    ]);
+    const nft_res = await fetch(`http://localhost:3000/api/nft?id=` + context['params']['id'])
+    const nft = await nft_res.json()
 
     // Pass post data to the page via props
-    return { props: { nft, crypto } }
+    return { props: { nft } }
 }
 
-export default function NftPage({ nft, crypto }) {
-    var price = parseFloat(crypto['price']) * parseFloat(nft['amount'])
-    price = price.toFixed(2)
+export default function NftPage({ nft }) {
+    
 
     // Cryptocurrency logo mapping
     const logos_currency = {
@@ -35,7 +27,7 @@ export default function NftPage({ nft, crypto }) {
         picture = <img src={nft['image']} alt="" class="bg-gray-100 rounded-lg" />
     else
         picture = <video src={nft['image']} alt="" class="bg-gray-100 rounded-lg" autoplay />
-
+    
     return (
         <div class="relative bg-white">
             <Head>
@@ -83,9 +75,9 @@ export default function NftPage({ nft, crypto }) {
                                     </div>
 
                                     <div class="border-t border-gray-200 pt-4">
-                                        <dt class="font-medium text-gray-900">Price ({crypto['currency']})</dt>
+                                        <dt class="font-medium text-gray-900">Price</dt>
                                         <dd class="mt-2 text-sm text-gray-500 inline">
-                                            {price}
+                                            <CryptoPrice ticker={nft['currency']} amount={nft['amount']}/>
                                         </dd>
                                     </div>
                                 </dl>

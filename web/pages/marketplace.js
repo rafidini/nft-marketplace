@@ -2,10 +2,13 @@ import Head from 'next/head'
 import Layout from '../components/layout'
 import List from '../components/list'
 
+// Constants
+const N_NFTS = 30
+
 // This gets called on every request
 export async function getServerSideProps() {
     // Fetch data from external API
-    const res = await fetch(`http://api:8000/nfts?limit=35`)
+    const res = await fetch(`http://localhost:3000/api/nfts?limit=` + N_NFTS)
     const data = await res.json()
   
     // Pass data to the page via props

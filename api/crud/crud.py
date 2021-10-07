@@ -81,9 +81,12 @@ def get_crypto(database: str, ticker: str):
     collection = database['cryptos']
 
     # Get NFTs
-    crypto = collection.find_one({'acronym':ticker})
+    crypto = [_ for _  in collection.find({'acronym':ticker}).sort("date", -1).limit(1)]
 
-    return crypto
+    if len(crypto) > 0:
+        return crypto[0]
+    else:
+        return {}
 
 def insert_crypto(database: str, crypto):
     # Connect
