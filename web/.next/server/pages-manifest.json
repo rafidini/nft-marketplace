@@ -2,7 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/nft/[id]": "pages/nft/[id].js",
-  "/marketplace": "pages/marketplace.js",
-  "/api/crypto": "pages/api/crypto.js"
+  "/about": "pages/about.js",
+  "/marketplace": "pages/marketplace.js"
 }
