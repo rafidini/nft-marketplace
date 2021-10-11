@@ -8,5 +8,5 @@ scrapers/*.txt
 scrapers/.*
 
 # Files that can be generated with 'npm install' in web
-web/node_modules/*
+# web/node_modules/*
 

@@ -24,15 +24,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/about": [
+    "/nft/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/about.js"
+      "static/chunks/pages/nft/[id].js"
     ],
-    "/marketplace": [
+    "/sign-in": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/marketplace.js"
+      "static/chunks/pages/sign-in.js"
     ]
   },
   "ampFirstPages": []
