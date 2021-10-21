@@ -14,7 +14,7 @@ export default function CryptoPrice({ children, ticker, amount }) {
     }, []);
 
     var price = parseFloat(crypto['price']) * parseFloat(amount)
-    price = price.toFixed(4)
+    price = price.toFixed(0)
 
     var date = crypto['date']
     

@@ -15,10 +15,10 @@ res = requests.post(
         'username': 'admin',
         'password': 'admin',
         'grant_type': 'password',
-        'client_secret': '13f56628-83ab-49bd-8c79-4df0409607f0'
+        'client_secret': '9ab41f39-2aa5-4168-821b-7b4e40b65c0b'
     }
 )
-print(f"POST Request [{res.status_code} - {res.reason}] : {res.json()}")
+print(f"POST Request no. 1 [{res.status_code} - {res.reason}] : {res.json()}")
 
 if res.reason.lower() != 'ok':
     print(f"Fail - {res.json().get('error_description')}")
@@ -32,27 +32,21 @@ token_type = res.json()['token_type']
 # --header 'Content-Type: application/json' \
 # --header 'Authorization: Bearer {token}' \
 # --data-raw '{"firstName":"{}","lastName":"{}", "email":"{}", "enabled":"true", "username":"{}"}'
+headers = {'Content-Type': 'application/json', 'Authorization': f'{token_type} {access_token}'}
+data = { "username":"mweah", "email":"meh.bwah@gmail.com", "firstName":"Meh",
+    "lastName":"Bwah", "enabled":"true",
+}
+
 res = requests.post(
     'http://localhost:8080/auth/admin/realms/nftmarketplace/users',
-    headers={
-        'Authorization': f'{token_type} {access_token}',
-        'Content-Type': 'application/json'
-    },
-    data={
-        "username":"mweah",
-        "email":"meh.bwah@gmail.com",
-        "firstName":"Meh",
-        "lastName":"Bwah",
-        "enabled":"true",
-        "emailVerified": "false",
-        "credentials": [{"type":"password", "value":"pwd", "temporary":"false"}]
-    }
+    headers=headers,
+    data=data
 )
 
 print()
 try:
-    print(f"POST Request keys : {res.json().keys()}")
+    print(f"POST Request no. 2 keys : {res.json().keys()}")
 except:
     pass
 
-print(f"POST Request [{res.status_code} - {res.reason}] : {res.json()}")
+print(f"POST Request no. 2 [{res.status_code} - {res.reason}] :\nJSON: {res.json()}")

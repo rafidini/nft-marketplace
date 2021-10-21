@@ -70,9 +70,10 @@ services:
 
   # Keycloak ft. PostgreSQL for authentification
   keycloak:
-    image: quay.io/keycloak/keycloak:10.0.0
+    image: quay.io/keycloak/keycloak:15.0.0
     depends_on:
       - postgres
+    container_name: auth
     ports:
       - "8080:8080"
     environment:
