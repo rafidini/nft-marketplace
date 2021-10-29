@@ -11,8 +11,11 @@ from datetime import datetime
 # Internal packages
 from models.nft import NFTModel
 from models.crypto import CryptoModel
+from models.user import UserModel
 from crud.crud import get_nfts, get_nft, insert_nft, get_cryptos, get_crypto, insert_crypto
+from crud.keycloak import create_new_user
 
+# Initialize
 app = FastAPI()
 
 @app.get("/")
@@ -82,7 +85,12 @@ def create_crypto(crypto: CryptoModel = Body(...)):
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)
 
 @app.post("/keycloak/user_creation")
-def create_user(user: dict):
-    content_response = {'content': 'Yay'}
-    content_response["status"] = "Success"
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)
+def create_user(user: UserModel = Body(...)):
+    # Create the user
+    res = create_new_user(user)
+
+    # Prepare content
+    content_response = {'content': dict(user)}
+    content_response["status"] = "Success" if res else "Failure"
+
+    return JSONResponse(status_code=status.HTTP_201_CREATED if res else 409, content=content_response)

@@ -4,14 +4,13 @@ Keycloak users management
 
 ....
 """
-
 # External packages
 import requests
 import json
 
 # Constants for token generation
 CLIENT_SECRET = 'ebcb2930-8e9b-49a9-bd23-ceb8644b3083'
-TOKEN_URL = 'http://localhost:8080/auth/realms/master/protocol/openid-connect/token'
+TOKEN_URL = 'http://auth:8080/auth/realms/master/protocol/openid-connect/token'
 TOKEN_HEADERS = {'Content-Type': 'application/x-www-form-urlencoded'}
 TOKEN_DATA = {
     'grant_type': 'client_credentials',
@@ -21,7 +20,7 @@ TOKEN_DATA = {
     'grant_type': 'password',
     'client_secret': CLIENT_SECRET
 }
-USER_URL = 'http://localhost:8080/auth/admin/realms/nftmarketplace/users'
+USER_URL = 'http://auth:8080/auth/admin/realms/nftmarketplace/users'
 
 # Functions
 def get_access_token() -> dict:
@@ -61,7 +60,7 @@ def generate_header_user_creation(token_type: str, access_token: str) -> dict:
 
     return headers
 
-def create_user(user: dict) -> bool:
+def create_new_user(user) -> bool:
     """
     Create a user with the given attribute.
 
@@ -82,11 +81,13 @@ def create_user(user: dict) -> bool:
     user_headers = generate_header_user_creation(token_type, access_token)
      
     # Request for user creation
+    user_dict = dict(user)
     response_user = requests.post(
         USER_URL,
         headers=user_headers,
-        data=json.dumps(user)
+        data=json.dumps(user_dict)
     )
+    print("RES ->",response_user.text)
 
     # Check if response if 201 (successful)
     return response_user.status_code == 201
