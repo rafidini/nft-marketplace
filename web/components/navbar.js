@@ -3,7 +3,8 @@ import { useCallback } from "react"
 
 function ResponsiveNavbar({route}) {
     // Links
-    const sign_in = "http://0.0.0.0:8080/auth/admin/nftmarketplace/console/"
+    const sign_in = "/sign-in"
+    const sign_up = "/sign-up"
 
     // Navbar text
     const navbarNormal = "text-base font-medium text-gray-500 hover:text-blue-900"
@@ -65,7 +66,7 @@ function ResponsiveNavbar({route}) {
                     </div>
                     <div class="py-6 px-5 space-y-6 bg-white">
                         <div>
-                            <a href={sign_in} class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-700">
+                            <a href={sign_up} class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-700">
                                 Sign up
                             </a>
                             <p class="mt-6 text-center text-base font-medium text-gray-500">
@@ -110,7 +111,7 @@ function ResponsiveNavbar({route}) {
                         <a href={sign_in} class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900">
                             Sign in
                         </a>
-                        <a href={sign_in} class="transition duration-500 ease-in-out ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 transform hover:-translate-y-1 hover:scale-110 hover:bg-blue-700">
+                        <a href={sign_up} class="transition duration-500 ease-in-out ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 transform hover:-translate-y-1 hover:scale-110 hover:bg-blue-700">
                             Sign up
                         </a>
                     </div>

@@ -80,3 +80,9 @@ def create_crypto(crypto: CryptoModel = Body(...)):
     # Response content
     content_response["status"] = "Success"
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)
+
+@app.post("/keycloak/user_creation")
+def create_user(user: dict):
+    content_response = {'content': 'Yay'}
+    content_response["status"] = "Success"
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)

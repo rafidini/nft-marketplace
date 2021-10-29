@@ -1,0 +1,1 @@
+{"c":["webpack"],"r":["pages/sign-up","pages/index"],"m":["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fsign-up&absolutePagePath=%2Fweb%2Fpages%2Fsign-up.js!","./pages/sign-up.js","./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F&absolutePagePath=%2Fweb%2Fpages%2Findex.js!","./pages/index.js"]}

@@ -1,4 +1,5 @@
 import requests
+import json
 
 # CURL CMD
 # curl --location --request POST 'http://localhost:8080/auth/realms/master/protocol/openid-connect/token' \
@@ -6,6 +7,7 @@ import requests
 # --data-urlencode 'grant_type=client_credentials' \
 # --data-urlencode 'client_id=admin-cli' \
 # --data-urlencode 'client_secret=???'
+client_secret = 'ebcb2930-8e9b-49a9-bd23-ceb8644b3083'
 res = requests.post(
     'http://localhost:8080/auth/realms/master/protocol/openid-connect/token',
     headers={'Content-Type': 'application/x-www-form-urlencoded'},
@@ -15,7 +17,7 @@ res = requests.post(
         'username': 'admin',
         'password': 'admin',
         'grant_type': 'password',
-        'client_secret': '9ab41f39-2aa5-4168-821b-7b4e40b65c0b'
+        'client_secret': client_secret
     }
 )
 print(f"POST Request no. 1 [{res.status_code} - {res.reason}] : {res.json()}")
@@ -33,14 +35,14 @@ token_type = res.json()['token_type']
 # --header 'Authorization: Bearer {token}' \
 # --data-raw '{"firstName":"{}","lastName":"{}", "email":"{}", "enabled":"true", "username":"{}"}'
 headers = {'Content-Type': 'application/json', 'Authorization': f'{token_type} {access_token}'}
-data = { "username":"mweah", "email":"meh.bwah@gmail.com", "firstName":"Meh",
-    "lastName":"Bwah", "enabled":"true",
+data = { "username":"jojob", "email":"jojo.bizarre@gmail.com", "firstName":"bizarre",
+    "lastName":"bizarre", "enabled":"true",
 }
 
 res = requests.post(
     'http://localhost:8080/auth/admin/realms/nftmarketplace/users',
     headers=headers,
-    data=data
+    data=json.dumps(data)
 )
 
 print()
