@@ -9,7 +9,7 @@ import requests
 import json
 
 # Constants for token generation
-CLIENT_SECRET = 'ebcb2930-8e9b-49a9-bd23-ceb8644b3083'
+TOKEN_CLIENT_SECRET = 'ebcb2930-8e9b-49a9-bd23-ceb8644b3083'
 TOKEN_URL = 'http://auth:8080/auth/realms/master/protocol/openid-connect/token'
 TOKEN_HEADERS = {'Content-Type': 'application/x-www-form-urlencoded'}
 TOKEN_DATA = {
@@ -18,9 +18,15 @@ TOKEN_DATA = {
     'username': 'admin',
     'password': 'admin',
     'grant_type': 'password',
-    'client_secret': CLIENT_SECRET
+    'client_secret': TOKEN_CLIENT_SECRET
 }
 USER_URL = 'http://auth:8080/auth/admin/realms/nftmarketplace/users'
+
+# Constants for user login
+LOGIN_CLIENT_SECRET = 'd12490ac-5cbf-42bc-89b7-ad090c60ccb9'
+LOGIN_URL = 'http://auth:8080/auth/realms/nftmarketplace/protocol/openid-connect/token'
+LOGIN_HEADERS = {'Content-Type': 'application/x-www-form-urlencoded'}
+
 
 # Functions
 def get_access_token() -> dict:
@@ -51,7 +57,7 @@ def generate_header_user_creation(token_type: str, access_token: str) -> dict:
     
     Returns:
     ========
-        (dict) dictonary representing a REST API header
+        (dict) dictonary representing a REST API header for user creation
     """
     headers = {
         'Content-Type': 'application/json', 
@@ -66,7 +72,7 @@ def create_new_user(user) -> bool:
 
     Parameters:
     ===========
-        user (dict) : User representation
+        user (dict-like) : User representation
     
     Returns:
     ========
@@ -87,7 +93,56 @@ def create_new_user(user) -> bool:
         headers=user_headers,
         data=json.dumps(user_dict)
     )
-    print("RES ->",response_user.text)
 
     # Check if response if 201 (successful)
     return response_user.status_code == 201
+
+def generate_data_user_login(username: str, password: str) -> dict:
+    """
+    Generate a data dictionary for user login.
+
+    Parameters:
+    ===========
+        username (str) : username
+        password (str) : user's password
+    
+    Returns:
+    ========
+        (dict) dictonary representing a REST API data for user login
+    """
+    data = {
+        'grant_type': 'client_credentials',
+        'client_id': 'admin-cli',
+        'username': username,
+        'password': password,
+        'grant_type': 'password',
+        'client_secret': LOGIN_CLIENT_SECRET
+    }
+
+    return data
+
+def login_user(username: str, password: str) -> bool:
+    """
+    Launch a POST request to check user credentials and allow login.
+
+    Parameters:
+    ===========
+        username (str) : username
+        password (str) : user's password
+    
+    Returns:
+    ========
+        (bool) return True if the login was successful otherwise False
+    """
+    # Prepare POST request
+    data = generate_data_user_login(username, password)
+
+    # POST request for user login
+    res = requests.post(
+        LOGIN_URL,
+        headers=LOGIN_HEADERS,
+        data=data
+    )
+
+    # Check status code
+    return res.status_code == 200

@@ -40,7 +40,7 @@ data = { "username":"jojob", "email":"jojo.bizarre@gmail.com", "firstName":"biza
 }
 
 res = requests.post(
-    'http://localhost:8080/auth/admin/realms/nftmarketplace/users',
+    'http://localhost:8080/auth/admin/realms/nftmarketplace/users/',
     headers=headers,
     data=json.dumps(data)
 )
