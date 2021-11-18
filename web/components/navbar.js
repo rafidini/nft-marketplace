@@ -3,11 +3,11 @@ import { useCallback } from "react"
 import { useSession, signIn, signOut } from "next-auth/react"
 
 
-function ResponsiveNavbar({route}) {
+function ResponsiveNavbar({ route }) {
     // Auth
     const { data: session } = useSession()
-    const handleSession = session? () => signOut() : () => signIn()
-    const username = session? session.user.username : 'Connect'
+    const handleSession = session ? () => signOut() : () => signIn()
+    const username = session ? session.user.username : 'Connect'
 
     // Navbar text
     const navbarNormal = "text-base font-medium text-gray-500 hover:text-blue-900"
@@ -56,12 +56,12 @@ function ResponsiveNavbar({route}) {
                                     </span>
                                 </a>
 
-                                <a href="/about" class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
+                                <a href="/wall" class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <span class="ml-3 text-base font-medium text-gray-900">
-                                        About
+                                        Wall
                                     </span>
                                 </a>
                             </nav>
@@ -101,8 +101,8 @@ function ResponsiveNavbar({route}) {
                         <a href="/marketplace" class={route == "marketplace" ? navbarBold : navbarNormal}>
                             Marketplace
                         </a>
-                        <a href="/about" class={route == "about" ? navbarBold : navbarNormal}>
-                            About
+                        <a href="/wall" class={route == "wall" ? navbarBold : navbarNormal}>
+                            Wall
                         </a>
 
 
@@ -121,5 +121,5 @@ function ResponsiveNavbar({route}) {
 // Navigation bar
 export default function Navbar({ children, route }) {
 
-    return <ResponsiveNavbar route={route}/>
+    return <ResponsiveNavbar route={route} />
 }
