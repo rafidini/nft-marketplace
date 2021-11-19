@@ -15,10 +15,10 @@ services:
       - ./web/.env
     depends_on:
       - mongodb
-      - keycloak
-  
-  # MongoDB as database for web application and
-  # scraped data
+      # - keycloak
+
+      # MongoDB as database for web application and
+      # scraped data
   mongodb:
     image: mongo
     container_name: mongodb
@@ -35,66 +35,77 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
-  
+
   # Selenium w/ Python to scrape data
   selenium:
     image: selenium/standalone-chrome
     container_name: selenium
     ports:
       - 4444:4444
-  
-  # Jupyter w/ Python as a platform to control
-  # scraping algorithms
-  scrapers:
+
+  nft_scraper:
     build: ./scrapers
-    container_name: scrapers
+    container_name: nft_scraper
     ports:
-     - "8888:8888"
-    command: ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
-    #command: ["pipenv", "run", "python", "nft.py"]
-    depends_on: 
+      - "8888:8888"
+    #command: ["pipenv", "run", "jupyter", "notebook", "--ip=0.0.0.0", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+    command: [ "pipenv", "run", "python", "nft.py" ]
+    restart: on-failure
+    depends_on:
       - selenium
       - api
     volumes:
       - ./scrapers:/home/dev/code/
-    
-  # PostgreSQL as database for Keycload
-  postgres:
-    image: postgres:12
-    container_name: postgres
+
+  crypto_scraper:
+    build: ./scrapers
+    container_name: crypto_scraper
     ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
+      - "8887:8887"
+    command: [ "pipenv", "run", "python", "crypto.py" ]
+    depends_on:
+      - selenium
+      - api
+    restart: on-failure
     volumes:
-      - ./auth_volume:/var/lib/postgresql/data
+      - ./scrapers:/home/dev/code/
+  # PostgreSQL as database for Keycload
+  # postgres:
+  #   image: postgres:12
+  #   container_name: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_DB: keycloak
+  #     POSTGRES_USER: keycloak
+  #     POSTGRES_PASSWORD: password
+  #   volumes:
+  #     - ./auth_volume:/var/lib/postgresql/data
 
   # Keycloak ft. PostgreSQL for authentification
-  keycloak:
-    image: quay.io/keycloak/keycloak:15.0.0
-    depends_on:
-      - postgres
-    container_name: auth
-    ports:
-      - "8080:8080"
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - DB_VENDOR=postgres
-      - DB_USER=keycloak
-      - DB_PASSWORD=password
-      - DB_ADDR=postgres
-      - DB_DATABASE=keycloak
-      - KEYCLOAK_IMPORT=/opt/jboss/keycloak/nftmarketplace-realm.json
-    volumes:
-    - ./keycloak/nftmarketplace-realm.json:/opt/jboss/keycloak/nftmarketplace-realm.json
+  # keycloak:
+  #   image: quay.io/keycloak/keycloak:15.0.0
+  #   depends_on:
+  #     - postgres
+  #   container_name: auth
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - KEYCLOAK_USER=admin
+  #     - KEYCLOAK_PASSWORD=admin
+  #     - DB_VENDOR=postgres
+  #     - DB_USER=keycloak
+  #     - DB_PASSWORD=password
+  #     - DB_ADDR=postgres
+  #     - DB_DATABASE=keycloak
+  #     - KEYCLOAK_IMPORT=/opt/jboss/keycloak/nftmarketplace-realm.json
+  #   volumes:
+  #   - ./keycloak/nftmarketplace-realm.json:/opt/jboss/keycloak/nftmarketplace-realm.json
 
 networks:
   default:
     driver: bridge
 
 volumes:
-  nft_volume:
-  auth_volume:
+  nft_volume: null
+  auth_volume: null

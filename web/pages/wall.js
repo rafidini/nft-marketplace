@@ -2,59 +2,54 @@ import Head from 'next/head'
 import React from 'react'
 import Layout from '../components/layout'
 
+
+const moodColors = {
+    0: "text-red-700 bg-red-300",
+    1: "text-yellow-700 bg-yellow-300",
+    2: "text-green-700 bg-green-300"
+}
+
+const moodTexts = {
+    0: "Meh",
+    1: "Some potential",
+    2: "The best!"
+}
+
+async function submitComment(commentData) {
+    // Send data
+    const fetchedData = await fetch("/api/comment", {
+        method: "POST",
+        body: JSON.stringify(commentData)
+    })
+        .then(res => res.json())
+}
+
 class WallPage extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: '',
-            title: '',
-            comment: '',
-            image: '',
-            mood: '',
-        };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
+    static async getInitialProps(ctx) {
+        const res = await fetch('http://localhost:3000/api/comment_get')
+        const json = await res.json()
+        return { comments: json }
     }
 
     handleSubmit = (event) => {
+        // Get data
         event.preventDefault();
         const data = new FormData(event.target);
-        console.log(data.get("name"))
+        const commentData = {
+            "name": data.get("name"),
+            "title": data.get("title"),
+            "mood": data.get("mood"),
+            "comment": data.get("comment"),
+            "image": data.get("image")
+        }
+
+        submitComment(commentData)
     }
 
     render() {
-        const moodColors = {
-            "1": "text-red-700 bg-red-300",
-            "2": "text-yellow-700 bg-yellow-300",
-            "3": "text-green-700 bg-green-300"
-        }
 
-        const moodTexts = {
-            "1": "Meh",
-            "2": "Some potential",
-            "3": "The best!"
-        }
-
-        const people = [
-            {
-                name: 'Jane Cooper',
-                title: 'Regional Paradigm Technician',
-                comment: 'Super application for NFT review and analysis!',
-                image:
-                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-                mood: "3"
-            },
-
-            {
-                name: 'Bill Gates',
-                title: 'Microsoft Ex-CEO',
-                comment: 'Wish I created this before... Lots of potential!',
-                image:
-                    'https://editions.flammarion.com/media/cache/portrait_medium/flammarion_img/Contributeurs_photos_expl/CT-016400.jpg',
-                mood: "2"
-            }
-        ]
+        const people = this.props.comments
 
         return (
             <div class="relative bg-white" >
@@ -106,10 +101,23 @@ class WallPage extends React.Component {
                                                     autoComplete="mood"
                                                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                 >
-                                                    <option>Meh (bad)</option>
-                                                    <option>Some potential</option>
-                                                    <option>the best!</option>
+                                                    <option value="0">Meh (bad)</option>
+                                                    <option value="1">Some potential</option>
+                                                    <option value="2">the best!</option>
                                                 </select>
+                                            </div>
+
+                                            <div className="col-span-6 sm:col-span-3">
+                                                <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                                                    Image URL
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="image"
+                                                    id="image"
+                                                    autoComplete="image"
+                                                    className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                />
                                             </div>
 
                                             <div className="col-span-6">

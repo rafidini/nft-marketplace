@@ -2,5 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/wall": "pages/wall.js"
+  "/marketplace": "pages/marketplace.js",
+  "/nft/[id]": "pages/nft/[id].js",
+  "/api/crypto": "pages/api/crypto.js",
+  "/api/nfts": "pages/api/nfts.js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js"
 }

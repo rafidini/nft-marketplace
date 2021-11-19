@@ -48,10 +48,10 @@ def insert_nft(database: str, nft):
 
     # Check if NFT is already in database
     if collection.find_one({'link': nft['link']}) is not None:
-        return False
-    
-    # Add the NFT in database
-    collection.insert_one(nft)
+        collection.update_one({'link': nft['link']}, {"$set": {k:nft[k] for k in nft if k!="_id"}})
+    else:
+        # Add the NFT in database
+        collection.insert_one(nft)
     
     return True
 
@@ -100,5 +100,35 @@ def insert_crypto(database: str, crypto):
     
     # Add the NFT in database
     collection.insert_one(crypto)
+    
+    return True
+
+def get_comments(database: str):
+    # Connect
+    client = get_client()
+
+    # Link with the database
+    database = client[database]
+
+    # Link with the collection
+    collection = database['comments']
+
+    # Get comments
+    comments = [_ for _  in collection.find({})]
+
+    return comments
+
+def insert_comment(database: str, comment):
+    # Connect
+    client = get_client()
+
+    # Link with the database
+    database = client[database]
+
+    # Link with the collection
+    collection = database['comments']
+    
+    # Add the NFT in database
+    collection.insert_one(comment)
     
     return True

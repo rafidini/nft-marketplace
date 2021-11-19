@@ -11,7 +11,9 @@ from datetime import datetime
 # Internal packages
 from models.nft import NFTModel
 from models.crypto import CryptoModel
-from crud.crud import get_nfts, get_nft, insert_nft, get_cryptos, get_crypto, insert_crypto
+from models.comment import CommentModel
+from crud.crud import get_nfts, get_nft, insert_nft, get_cryptos, get_crypto, insert_crypto, \
+    get_comments, insert_comment
 from crud.keycloak import create_new_user, login_user
 
 # Initialize
@@ -82,3 +84,17 @@ def create_crypto(crypto: CryptoModel = Body(...)):
     # Response content
     content_response["status"] = "Success"
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=content_response)
+
+@app.get("/comments/get")
+def get_all_comments():
+    comments = get_comments('local')
+    return JSONResponse(status_code=200, content=comments)
+
+@app.post("/comments/add")
+def add_one_comment(comment: CommentModel = Body(...)):
+    comment = jsonable_encoder(comment)
+
+    if insert_comment('local', comment):
+        return JSONResponse(status_code=201, content=comment)
+    else:
+        return JSONResponse(status_code=400, content="Fail to add comment.")
