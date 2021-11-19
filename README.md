@@ -1,13 +1,4 @@
 # NFT Marketplace
-
-![logo.png](assets/logo.png)
-
-<p>
-  <img src="https://img.shields.io/badge/Made%20with-Python v3.8-darkgreen?style=flat&logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/Made%20with-Docker-blue?style=flat&logo=docker&logoColor=white">
-</p>
-
-# Table of contents
 - [NFT Marketplace [template]](#nft-marketplace-template)
 - [Table of contents](#table-of-contents)
 - [About](#about)
@@ -20,7 +11,15 @@
 - [Credits](#credits)
 
 # About
-...
+This application is an example of a marketplace where you cannot buy (unfortunately). Here is how this application was implemented :
+- frontend : **Next.js** (**React** framework) + **Tailwind CSS**
+- backend  : **FastAPI** (web framework for building APIs with **Python** 3.6+) + 
+  **MongoDB** (NoSQL database program)
+- scraper  : **Selenium** (open-source project aimed at automated web browsing)
+
+Some functionalities :
+- Visualize NFTs, real-time price in fiat currency and fixed price in cryptocurrency
+- Post and access to comments made for the application on the wall page
 
 # Installation
 This part is dedicated to the prerequisites to launch the application.
@@ -53,13 +52,35 @@ $ docker-compose up
 ```
 
 # Usage
-...
+## Web
+After launching the docker container, check the main web page at [localhost:3000](http://localhost:3000)
+and if the page is loaded you can begin to check either, the *Marketplace* or the *Wall*.
 
-# Contributing
-...
+You can also find the *Marketplace* at [localhost:3000/marketplace](http://localhost:3000/marketplace) and,
+the *Wall* page at [localhost:3000/wall](http://localhost:3000/wall).
 
-# Help
-...
+## Rest API
+In order to check our API you can navigate through the following page [localhost:8000/docs](http://localhost:8000/docs) and you can test the different **GET** and, **POST** requests by using the *Try it out* button.
+
+## Scrapers
+The scrapers are automated **Python** scripts that extracts data from specific websites (here [binance.com](http://binance.com)) at regular intervals in an endless loop.
+
+## MongoDB
+Data is arranged in the the `local` database and you can find :
+- NFTs in the `nfts` collection
+- Cryptocurrency prices in the `cryptos` collection
+- Wall page comments in the `comments` collection
+
+# Issues
+## Keycloak
+We wanted to add an authentification system by using **Keycloak** but we couldn't do it with our tech
+stack so we put it aside. This functionnality can be implemented in the future.
+
+## Kong
+Our lack of time in the project developpement did not allow us to add the gateway management with **Kong**
+so this functionnality can also be implemented in the future.
 
 # Credits
-...
+We would like to thanks the following people for their support :
+- COURIVAUD Raphaël
+- VO Nicolas

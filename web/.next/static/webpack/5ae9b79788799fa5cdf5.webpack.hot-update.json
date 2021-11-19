@@ -1,0 +1,1 @@
+{"c":["webpack"],"r":["pages/nft/[id]"],"m":["./components/crypto_price.js","./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js","./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fnft%2F%5Bid%5D&absolutePagePath=%2Fweb%2Fpages%2Fnft%2F%5Bid%5D.js!","./pages/nft/[id].js"]}

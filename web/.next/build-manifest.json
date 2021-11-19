@@ -33,11 +33,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/marketplace.js"
-    ],
-    "/nft/[id]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/nft/[id].js"
     ]
   },
   "ampFirstPages": []
