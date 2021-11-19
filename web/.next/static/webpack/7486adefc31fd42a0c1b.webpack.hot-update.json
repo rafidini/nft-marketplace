@@ -1,1 +1,1 @@
-{"c":["webpack"],"r":["pages/marketplace"],"m":["./components/list.js","./components/list_element.js","./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2Fmarketplace&absolutePagePath=%2Fweb%2Fpages%2Fmarketplace.js!","./node_modules/next/dist/client/link.js","./node_modules/next/dist/client/use-intersection.js","./node_modules/next/link.js","./pages/marketplace.js"]}
+{"c":["webpack"],"r":[],"m":[]}
